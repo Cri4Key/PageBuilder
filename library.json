@@ -5,7 +5,7 @@
   "repository":
   {
     "type": "git",
-    "url": "https://github.com/Hieromon/PageBuilder.git"
+    "url": "https://github.com/Cri4Key/PageBuilder.git"
   },
   "frameworks": "arduino",
   "platforms":
@@ -13,7 +13,7 @@
     "espressif8266",
     "espressif32"
   ],
-  "version": "1.5.6",
+  "version": "1.6.0",
   "license": "MIT",
   "headers": "PageBuilder.h"
 }
