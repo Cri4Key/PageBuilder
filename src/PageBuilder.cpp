@@ -689,7 +689,7 @@ void PageBuilder::_handle(int code, WebServer& server) {
         server.sendContent_P(contentBlock.c_str());
         (void)(blkSize);
         PB_DBG("blk:%u\n", blkSize);
-        server.client().flush();
+        CLIENT_CLEAR(server.client());
       }
     }
     else {
@@ -723,7 +723,7 @@ void PageBuilder::_handle(int code, WebServer& server) {
               bp = cBuffer;
               cBufferLen = PAGEBUILDER_CONTENTBLOCK_SIZE;
             }
-            server.client().flush();
+            CLIENT_CLEAR(server.client());
             blkSize = pe.build(bp, cBufferLen, args);
           }
         }
