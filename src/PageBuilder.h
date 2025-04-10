@@ -297,11 +297,16 @@ namespace PageBuilderUtil {
   // backward compatibility with ESP8266 arduino core 3.0.0 and later.
   // However, it relies solely on the canHandle member function as a criterion
   // and lacks completeness.
+#if defined(ARDUINO_ARCH_ESP32) && (ESP_ARDUINO_VERSION_MAJOR >= 3)
+#define CLIENT_CLEAR(client) (client.clear())
+  using URI_TYPE_SIGNATURE = const String &;
+#else
+#define CLIENT_CLEAR(client) (client.flush()) // Deprecated starting ESP32 Arduino Core 3.x
   using URI_TYPE_SIGNATURE = std::conditional<
-    std::is_lvalue_reference<TypeOfArgument<decltype(&RequestHandler::canHandle)>::arg<1>::type>::value,
-    const String&,
-    String
-  >::type;
+      std::is_lvalue_reference<TypeOfArgument<decltype(&RequestHandler::canHandle)>::arg<1>::type>::value,
+      const String &,
+      String>::type;
+#endif
 };
 
 /**
@@ -335,6 +340,10 @@ class PageBuilder : public RequestHandler {
   size_t  build(String& content);
   size_t  build(String& content, PageArgument& args);
   void  cancel(const bool cancelation = true) { _cancel = cancelation; }
+#if defined(ARDUINO_ARCH_ESP32) && (ESP_ARDUINO_VERSION_MAJOR >= 3)
+  virtual bool canHandle(WebServer &server, HTTPMethod requestMethod, PageBuilderUtil::URI_TYPE_SIGNATURE requestUri) override;
+  virtual bool canUpload(WebServer &server, PageBuilderUtil::URI_TYPE_SIGNATURE uri) override;
+#endif
   virtual bool  canHandle(HTTPMethod requestMethod, PageBuilderUtil::URI_TYPE_SIGNATURE requestUri) override;
   virtual bool  canUpload(PageBuilderUtil::URI_TYPE_SIGNATURE uri) override;
   void  clearElements(void) { _elements.clear(); }

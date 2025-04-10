@@ -505,6 +505,33 @@ bool PageBuilder::canUpload(PageBuilderUtil::URI_TYPE_SIGNATURE uri) {
   return true;
 }
 
+#if defined(ARDUINO_ARCH_ESP32) && (ESP_ARDUINO_VERSION_MAJOR >= 3)
+/**
+ * Wrapper for ESP32 Arduino Core 3.x new API.
+ * Without this, PageBuilder won't work on such version.
+ * @param   server  Unused.
+ * @param   requestMethod   HTTP method of the current request.
+ * @param   RequestUri  Requested URI
+ * @return  true  the PageBuilder can handle this request.
+ * @return  false
+ */
+bool PageBuilder::canHandle(WebServer &server, HTTPMethod requestMethod, PageBuilderUtil::URI_TYPE_SIGNATURE requestUri) {
+  return canHandle(requestMethod, requestUri);
+}
+
+/**
+ * Wrapper for ESP32 Arduino Core 3.x new API.
+ * Without this, PageBuilder won't work on such version.
+ * @param   server  Unused.
+ * @param   uri Requested uploading URI.
+ * @return  true  The uploader will activate.
+ * @return  false The uploader does not correspond to the requested URI.
+ */
+bool PageBuilder::canUpload(WebServer &server, PageBuilderUtil::URI_TYPE_SIGNATURE uri) {
+  return canUpload(uri);
+}
+#endif
+
 /**
  * Calculates the approximate content size,
  * not including token replacement.
